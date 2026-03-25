@@ -1,0 +1,61 @@
+<h2>3 Architectural Approaches</h2>
+<p class="subtitle">How should the AI orchestration layer connect to ERPNext?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Predefined Tool Calling</h3>
+      <p>The LLM is given a fixed set of Python functions ("tools") that map to ERPNext API calls — <em>create_customer</em>, <em>query_sales</em>, <em>configure_module</em>, etc. User chats → LLM picks which tools to call → results returned.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Predictable, safe, testable</li>
+          <li>Easy to audit what the AI can do</li>
+          <li>Works well with smaller LLMs like Qwen</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Limited to predefined capabilities</li>
+          <li>New features require new tool functions</li>
+        </ul></div>
+      </div>
+      <p class="label">⭐ Recommended</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>RAG + Tool Calling Hybrid</h3>
+      <p>ERPNext data is indexed into a vector store (e.g. ChromaDB). Queries search the index first ("what are my top customers?"), while actions still use tool calling. Two-track system: read via RAG, write via tools.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Better at answering complex data questions</li>
+          <li>Handles large datasets without hitting token limits</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>More complex — needs vector DB</li>
+          <li>Index must stay in sync with ERPNext data</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>LLM-Generated API Calls</h3>
+      <p>The LLM is shown the ERPNext API schema and generates raw API calls dynamically. More flexible — can technically do anything ERPNext supports without pre-coding each operation.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Maximum flexibility</li>
+          <li>No need to pre-define every operation</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Risky — LLM can make unintended API calls</li>
+          <li>Harder to test and audit</li>
+          <li>Unreliable with smaller/local models</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>

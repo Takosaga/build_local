@@ -1,0 +1,82 @@
+<h2>Setup Wizard Flow</h2>
+<p class="subtitle">What the business owner experiences the first time they run the app</p>
+
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 700px; margin: 0 auto;">
+
+  <!-- Step 1 -->
+  <div style="border: 2px solid #6366f1; border-radius: 8px; padding: 16px;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+      <div style="background: #6366f1; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">1</div>
+      <strong>Simple Form — Business Basics</strong>
+    </div>
+    <div class="mockup" style="margin: 0;">
+      <div class="mockup-body" style="padding: 12px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">
+          <div><div class="label">Business Name</div><input class="mock-input" value="Bloom Flower Shop" readonly></div>
+          <div><div class="label">Business Type</div><input class="mock-input" value="Flower Shop (Retail)" readonly></div>
+          <div><div class="label">City / Region</div><input class="mock-input" value="Austin, TX" readonly></div>
+          <div><div class="label">Number of Employees</div><input class="mock-input" value="1–5" readonly></div>
+        </div>
+        <div style="margin-top: 10px; text-align: right;"><button class="mock-button">Continue →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Arrow -->
+  <div style="text-align: center; font-size: 22px; color: #64748b;">↓</div>
+
+  <!-- Step 2 -->
+  <div style="border: 2px solid #10b981; border-radius: 8px; padding: 16px;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+      <div style="background: #10b981; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">2</div>
+      <strong>AI Chat Takes Over — Data Decision</strong>
+    </div>
+    <div class="mockup" style="margin: 0;">
+      <div class="mockup-body" style="padding: 12px; font-size: 13px;">
+        <div style="background: #1e3a2f; border-radius: 6px; padding: 10px; margin-bottom: 8px; color: #86efac;">
+          🤖 Hi! I'm setting up ERPNext for <strong>Bloom Flower Shop</strong>. Before I configure everything, I have one question:<br><br>
+          Do you have existing business data (customer lists, product catalogue, past sales) you'd like to import? Or would you prefer I create a demo setup so you can explore first?
+        </div>
+        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+          <button class="mock-button" style="background: #1e293b; border: 1px solid #334155;">I have existing data</button>
+          <button class="mock-button">Start with demo setup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Arrow + Branch -->
+  <div style="text-align: center; font-size: 22px; color: #64748b;">↓</div>
+
+  <!-- Step 3 - two branches -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    <div style="border: 2px solid #f59e0b; border-radius: 8px; padding: 14px;">
+      <div style="font-weight: bold; color: #f59e0b; margin-bottom: 8px;">Branch A — Import Existing Data</div>
+      <div style="font-size: 12px; color: #94a3b8; line-height: 1.6;">
+        AI asks for CSV/spreadsheet files<br>
+        Guides through mapping columns<br>
+        Imports customers, items, suppliers<br>
+        Configures modules based on business type
+      </div>
+    </div>
+    <div style="border: 2px solid #6366f1; border-radius: 8px; padding: 14px;">
+      <div style="font-weight: bold; color: #6366f1; margin-bottom: 8px;">Branch B — Demo Setup</div>
+      <div style="font-size: 12px; color: #94a3b8; line-height: 1.6;">
+        AI creates sample customers, items<br>
+        Configures relevant ERPNext modules<br>
+        Sets up chart of accounts<br>
+        Ready to explore in minutes
+      </div>
+    </div>
+  </div>
+
+  <!-- Arrow -->
+  <div style="text-align: center; font-size: 22px; color: #64748b;">↓</div>
+
+  <!-- Step 4 -->
+  <div style="border: 2px solid #ec4899; border-radius: 8px; padding: 14px; text-align: center;">
+    <div style="font-weight: bold; color: #ec4899; margin-bottom: 6px;">✅ Setup Complete — Ongoing Chat Assistant</div>
+    <div style="font-size: 12px; color: #94a3b8;">ERPNext is configured. Business owner can now ask questions and give instructions in plain language.</div>
+  </div>
+
+</div>
