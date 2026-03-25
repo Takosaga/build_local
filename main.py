@@ -1,7 +1,7 @@
 import asyncio
 import json
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request, Form, UploadFile, File
+from fastapi import FastAPI, Request, Form, UploadFile, File, HTTPException
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -61,7 +61,7 @@ async def wizard_start(
 @app.post("/wizard/upload")
 async def wizard_upload(file: UploadFile = File(...), doctype: str = Form(...)):
     """CSV upload — import_csv tool not yet implemented."""
-    return {"result": "CSV import not yet available. Please use the demo setup option."}
+    raise HTTPException(status_code=501, detail="CSV import not yet available. Please use the demo setup option.")
 
 
 @app.post("/chat")
@@ -69,7 +69,7 @@ async def chat(request: Request):
     body = await request.json()
     user_message = body.get("message", "").strip()
     if not user_message:
-        return {"error": "Empty message"}
+        raise HTTPException(status_code=400, detail="Empty message")
 
     save_message("user", user_message)
     history = load_conversation(limit=40)
@@ -105,7 +105,7 @@ async def chat(request: Request):
 
     save_message("assistant", response_text)
 
-    if mode == "setup" and should_advance_from_info_step() and state.current_step == 2:
+    if mode == "setup" and should_advance_from_info_step() and get_state().current_step == 2:
         advance_step()
 
     async def token_stream():

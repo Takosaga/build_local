@@ -17,7 +17,7 @@ def get_state() -> WizardState:
 
 def advance_step(business_data: dict | None = None):
     state = get_state()
-    if business_data:
+    if business_data is not None:
         merged = {**state.business_data, **business_data}
     else:
         merged = state.business_data
