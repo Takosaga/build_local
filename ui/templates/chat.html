@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% set show_settings = true %}
+{% block title %}{{ business_name }} — Business Assistant{% endblock %}
+{% block content %}
+<div class="chat-container">
+  <div id="messages" class="messages"></div>
+  <div id="spinner" class="spinner hidden">AI is thinking…</div>
+  <form id="chat-form" class="chat-input">
+    <input type="text" id="user-input" placeholder="Ask me anything about your business…" autocomplete="off">
+    <button type="submit">Send</button>
+  </form>
+</div>
+{% endblock %}

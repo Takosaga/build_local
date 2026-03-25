@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Setup — Business Assistant{% endblock %}
+{% block content %}
+
+{% if step == 0 %}
+<div class="wizard-form">
+  <h1>Welcome! Let's set up your business.</h1>
+  <p class="subtitle">This takes about 5 minutes. We'll configure everything for you.</p>
+  <form id="start-form">
+    <label>Business name <input type="text" name="business_name" required placeholder="e.g. Bloom Flower Shop"></label>
+    <label>Business type <input type="text" name="business_type" required placeholder="e.g. Flower Shop, Café, Hair Salon"></label>
+    <label>City / region <input type="text" name="location" required placeholder="e.g. Manchester"></label>
+    <label>Number of employees
+      <select name="employees">
+        <option>Just me</option>
+        <option>2–5</option>
+        <option>6–15</option>
+        <option>16+</option>
+      </select>
+    </label>
+    <button type="submit">Continue →</button>
+  </form>
+</div>
+
+{% else %}
+<div class="chat-container">
+  <div id="messages" class="messages"></div>
+  <div id="spinner" class="spinner hidden">AI is thinking…</div>
+  <form id="chat-form" class="chat-input">
+    <input type="text" id="user-input" placeholder="Type your reply…" autocomplete="off">
+    <button type="submit">Send</button>
+  </form>
+  {% if step >= 4 %}
+  <div class="finalise-bar">
+    <button onclick="finaliseSetup()" class="btn-primary">✅ Finalise Setup</button>
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}
