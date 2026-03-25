@@ -87,7 +87,6 @@ async def chat(request: Request):
             current_step=state.current_step,
         )
         tools = get_setup_tools()
-        increment_questions_asked()
     else:
         system_prompt = get_ongoing_prompt(
             business_name=state.business_data.get("name", "your business"),
@@ -105,13 +104,29 @@ async def chat(request: Request):
 
     save_message("assistant", response_text)
 
-    if mode == "setup" and should_advance_from_info_step() and get_state().current_step == 2:
-        advance_step()
+    # Step-advance checks — always run AFTER saving the assistant response.
+    step_changed = False
+    current_step = get_state().current_step
+
+    if mode == "setup":
+        if current_step == 1:
+            # Step 1 → 2: advance after first user reply; reset counter and greeted flag.
+            advance_step()
+            update_business_data({"_questions_asked": 0, "_greeted_step": None})
+            step_changed = True
+        elif current_step == 2:
+            # Step 2 → 3: advance after 5 questions.
+            increment_questions_asked()
+            if should_advance_from_info_step():
+                advance_step()
+                step_changed = True
 
     async def token_stream():
         for char in response_text:
             yield f"data: {json.dumps({'delta': char})}\n\n"
             await asyncio.sleep(0)
+        if step_changed:
+            yield f"data: {json.dumps({'step_changed': True})}\n\n"
         yield "data: [DONE]\n\n"
 
     return StreamingResponse(token_stream(), media_type="text/event-stream")
@@ -119,6 +134,9 @@ async def chat(request: Request):
 
 @app.post("/wizard/finalise")
 async def wizard_finalise():
+    state = get_state()
+    if state.current_step < 3:
+        raise HTTPException(status_code=400, detail="Setup not yet at review step.")
     mark_complete()
     return {"status": "ok"}
 
