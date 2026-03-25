@@ -23,14 +23,15 @@
 </div>
 
 {% else %}
-<div class="chat-container">
+<div class="chat-container" id="wizard-chat">
+  <p class="step-indicator">Step {{ step }} of 3 — {{ step_name }}</p>
   <div id="messages" class="messages"></div>
   <div id="spinner" class="spinner hidden">AI is thinking…</div>
   <form id="chat-form" class="chat-input">
-    <input type="text" id="user-input" placeholder="Type your reply…" autocomplete="off">
-    <button type="submit">Send</button>
+    <input type="text" id="user-input" placeholder="Type your reply…" autocomplete="off" disabled>
+    <button type="submit" disabled>Send</button>
   </form>
-  {% if step >= 4 %}
+  {% if step == 3 %}
   <div class="finalise-bar">
     <button onclick="finaliseSetup()" class="btn-primary">✅ Finalise Setup</button>
   </div>
