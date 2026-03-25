@@ -33,3 +33,5 @@ main { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
 .finalise-bar { padding: 1rem; border-top: 1px solid #e2e8f0; text-align: center; }
 .btn-primary { background: #10b981; color: white; border: none; padding: 12px 32px; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600; }
 .btn-primary:hover { background: #059669; }
+.next-step-btn { background: #6366f1; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 600; align-self: center; margin-top: 0.5rem; }
+.next-step-btn:hover { background: #4f46e5; }

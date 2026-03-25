@@ -105,8 +105,14 @@ async def wizard_greet():
         system_prompt=greet_prompt,
     )
 
-    save_message("assistant", response_text)
-    update_business_data({"_greeted_step": current_step})
+    _error_prefixes = (
+        "Could not reach the AI model:",
+        "The AI model isn't running.",
+        "I'm having trouble completing",
+    )
+    if not response_text.startswith(_error_prefixes):
+        save_message("assistant", response_text)
+        update_business_data({"_greeted_step": current_step})
 
     async def greet_stream():
         for char in response_text:
@@ -161,7 +167,14 @@ async def chat(request: Request):
         system_prompt=system_prompt,
     )
 
-    save_message("assistant", response_text)
+    _error_prefixes = (
+        "Could not reach the AI model:",
+        "The AI model isn't running.",
+        "I'm having trouble completing",
+    )
+    is_error = response_text.startswith(_error_prefixes)
+    if not is_error:
+        save_message("assistant", response_text)
 
     # Step-advance checks — always run AFTER saving the assistant response.
     step_changed = False

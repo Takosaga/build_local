@@ -80,7 +80,12 @@ if (wizardChat) {
         }
       );
       if (stepChanged) {
-        location.reload();
+        const btn = document.createElement('button');
+        btn.textContent = 'Next Step →';
+        btn.className = 'next-step-btn';
+        btn.onclick = () => location.reload();
+        messagesEl.appendChild(btn);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
       }
     } catch {
       assistantEl.textContent = 'Could not connect to the assistant. Please refresh.';
@@ -122,7 +127,12 @@ if (chatForm) {
         }
       );
       if (stepChanged) {
-        location.reload();
+        const btn = document.createElement('button');
+        btn.textContent = 'Next Step →';
+        btn.className = 'next-step-btn';
+        btn.onclick = () => location.reload();
+        messagesEl.appendChild(btn);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
       }
     } catch {
       assistantEl.textContent = 'Something went wrong. Please try again.';

@@ -61,15 +61,16 @@ def execute_tool_call(tool_call: dict, adapter: ERPNextAdapter) -> str:
 
 
 def _call_lm_studio(messages: list[dict], tools: list[dict]) -> dict:
+    body: dict = {
+        "model": config.LM_STUDIO_MODEL,
+        "messages": messages,
+    }
+    if tools:
+        body["tools"] = tools
     with httpx.Client(timeout=120.0) as client:
         resp = client.post(
             f"{config.LM_STUDIO_URL}/v1/chat/completions",
-            json={
-                "model": config.LM_STUDIO_MODEL,
-                "messages": messages,
-                "tools": tools,
-                "stream": False,
-            },
+            json=body,
         )
     resp.raise_for_status()
     return resp.json()
@@ -86,6 +87,11 @@ def run_tool_loop(
     Returns the final text response from the LLM.
     """
     loop_messages = [{"role": "system", "content": system_prompt}] + messages
+    # Ensure the first non-system message is a user turn — some models reject assistant-first conversations.
+    non_system = [m for m in loop_messages if m["role"] != "system"]
+    if not non_system or non_system[0]["role"] != "user":
+        # Insert placeholder user message right after the system message
+        loop_messages = loop_messages[:1] + [{"role": "user", "content": "Go ahead."}] + loop_messages[1:]
 
     for _ in range(MAX_LOOP_ITERATIONS):
         try:
