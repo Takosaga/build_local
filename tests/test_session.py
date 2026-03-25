@@ -1,16 +1,4 @@
 import pytest
-import tempfile
-import os
-from pathlib import Path
-
-
-@pytest.fixture(autouse=True)
-def tmp_db(monkeypatch, tmp_path):
-    """Redirect DB to a temp file for each test."""
-    import db.session as session
-    monkeypatch.setattr(session, "DB_PATH", tmp_path / "test.db")
-    session.init_db()
-    yield
 
 
 def test_init_db_creates_tables():

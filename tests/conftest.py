@@ -1,7 +1,7 @@
 import pytest
 
 
-@pytest.fixture()
+@pytest.fixture(autouse=True)
 def tmp_db(monkeypatch, tmp_path):
     import db.session as session
     monkeypatch.setattr(session, "DB_PATH", tmp_path / "test.db")
