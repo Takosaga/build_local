@@ -12,7 +12,7 @@ from db.session import init_db, save_message, load_conversation
 from erpnext.adapter import ERPNextAdapter
 from llm.client import run_tool_loop, is_lm_studio_reachable
 from llm.tools import get_setup_tools, get_ongoing_tools
-from llm.prompts import get_setup_prompt, get_ongoing_prompt
+from llm.prompts import get_setup_prompt, get_ongoing_prompt, get_greet_prompt
 from wizard.state import get_state, update_business_data, mark_complete, reset, advance_step
 from wizard.flow import get_mode, increment_questions_asked, should_advance_from_info_step
 
@@ -35,9 +35,11 @@ async def index(request: Request):
         return templates.TemplateResponse(request, "chat.html", {
             "business_name": state.business_data.get("name", "Your Business"),
         })
+    step_names = {1: "Data Decision", 2: "Gathering Information", 3: "Review"}
     return templates.TemplateResponse(request, "wizard.html", {
         "step": state.current_step,
         "business_data": state.business_data,
+        "step_name": step_names.get(state.current_step, ""),
     })
 
 
@@ -56,6 +58,59 @@ async def wizard_start(
     })
     advance_step()
     return {"status": "ok", "step": 1}
+
+
+@app.get("/wizard/greet")
+async def wizard_greet():
+    state = get_state()
+    current_step = state.current_step
+
+    # Out-of-range: return empty stream
+    if current_step not in (1, 2, 3):
+        async def empty_stream():
+            yield "data: [DONE]\n\n"
+        return StreamingResponse(empty_stream(), media_type="text/event-stream")
+
+    # Idempotency: if already greeted for this step, replay last assistant message
+    greeted_step = state.business_data.get("_greeted_step")
+    if greeted_step == current_step:
+        history = load_conversation(limit=40)
+        cached = next(
+            (m["content"] for m in reversed(history) if m["role"] == "assistant"),
+            ""
+        )
+        async def cached_stream():
+            yield f"data: {cached}\n\n"
+            yield "data: [DONE]\n\n"
+        return StreamingResponse(cached_stream(), media_type="text/event-stream")
+
+    # Fresh greet: call LLM
+    greet_prompt = get_greet_prompt(
+        step=current_step,
+        business_name=state.business_data.get("name", "your business"),
+        business_type=state.business_data.get("type", "business"),
+        location=state.business_data.get("location", ""),
+    )
+    # Pass full history for step 3 (summary needs context); empty list for steps 1 and 2
+    history = load_conversation(limit=40) if current_step == 3 else []
+    adapter = ERPNextAdapter()
+
+    response_text = await asyncio.to_thread(
+        run_tool_loop,
+        messages=history,
+        tools=[],
+        adapter=adapter,
+        system_prompt=greet_prompt,
+    )
+
+    save_message("assistant", response_text)
+    update_business_data({"_greeted_step": current_step})
+
+    async def greet_stream():
+        yield f"data: {response_text}\n\n"
+        yield "data: [DONE]\n\n"
+
+    return StreamingResponse(greet_stream(), media_type="text/event-stream")
 
 
 @app.post("/wizard/upload")
