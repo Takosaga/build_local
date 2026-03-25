@@ -1,4 +1,14 @@
 import pytest
+from unittest.mock import MagicMock
+
+
+@pytest.fixture()
+def mock_adapter():
+    adapter = MagicMock()
+    adapter.post.return_value = {"data": {"name": "ok"}}
+    adapter.put.return_value = {"data": {"name": "ok"}}
+    adapter.get.return_value = {"data": []}
+    return adapter
 
 
 @pytest.fixture(autouse=True)

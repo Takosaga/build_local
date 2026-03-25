@@ -1,3 +1,4 @@
+import json
 import pytest
 import respx
 import httpx
@@ -38,6 +39,8 @@ def test_post_success(adapter):
     )
     result = adapter.post("/api/resource/Customer", {"customer_name": "New Customer"})
     assert result["data"]["name"] == "New Customer"
+    sent = json.loads(respx.calls.last.request.content)
+    assert sent == {"customer_name": "New Customer"}
 
 
 @respx.mock
@@ -47,6 +50,8 @@ def test_put_success(adapter):
     )
     result = adapter.put("/api/resource/Item/ITEM-001", {"standard_rate": 25.0})
     assert result["data"]["name"] == "ITEM-001"
+    sent = json.loads(respx.calls.last.request.content)
+    assert sent == {"standard_rate": 25.0}
 
 
 @respx.mock

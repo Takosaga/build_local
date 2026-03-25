@@ -15,7 +15,7 @@ class ERPNextAdapter:
         }
 
     def get(self, endpoint: str, params: dict | None = None) -> dict:
-        with httpx.Client() as client:
+        with httpx.Client(timeout=30.0) as client:
             resp = client.get(
                 f"{self.base_url}{endpoint}", headers=self.headers, params=params
             )
@@ -24,7 +24,7 @@ class ERPNextAdapter:
         return resp.json()
 
     def post(self, endpoint: str, data: dict) -> dict:
-        with httpx.Client() as client:
+        with httpx.Client(timeout=30.0) as client:
             resp = client.post(
                 f"{self.base_url}{endpoint}", headers=self.headers, json=data
             )
@@ -33,7 +33,7 @@ class ERPNextAdapter:
         return resp.json()
 
     def put(self, endpoint: str, data: dict) -> dict:
-        with httpx.Client() as client:
+        with httpx.Client(timeout=30.0) as client:
             resp = client.put(
                 f"{self.base_url}{endpoint}", headers=self.headers, json=data
             )
