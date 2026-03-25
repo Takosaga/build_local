@@ -1,4 +1,4 @@
-from erpnext.adapter import ERPNextAdapter
+from erpnext.adapter import ERPNextAdapter, ERPNextError
 
 
 def create_company(adapter: ERPNextAdapter, name: str, currency: str, fiscal_year_start: str) -> str:
@@ -7,17 +7,24 @@ def create_company(adapter: ERPNextAdapter, name: str, currency: str, fiscal_yea
         "abbr": name[:3].upper(),
         "default_currency": currency,
         "country": "United Kingdom",
+        "fiscal_year_start": fiscal_year_start,
     })
     return f"Company '{name}' created with currency {currency}."
 
 
 def enable_modules(adapter: ERPNextAdapter, modules: list[str]) -> str:
+    failed = []
     for module in modules:
         try:
             adapter.post("/api/resource/Module Def", {"module_name": module, "app_name": "erpnext"})
-        except Exception:
+        except ERPNextError:
             pass  # Module may already exist
-    return f"Modules enabled: {', '.join(modules)}."
+        except Exception as e:
+            failed.append(f"{module}: {e}")
+    result = f"Modules enabled: {', '.join(modules)}."
+    if failed:
+        result += f" Warnings: {', '.join(failed)}."
+    return result
 
 
 def setup_chart_of_accounts(adapter: ERPNextAdapter, company: str, business_type: str) -> str:
@@ -91,5 +98,7 @@ def create_supplier(adapter: ERPNextAdapter, name: str, phone: str = "", email: 
     data = {"supplier_name": name, "supplier_group": "All Supplier Groups", "supplier_type": "Company"}
     if phone:
         data["mobile_no"] = phone
+    if email:
+        data["email_id"] = email
     adapter.post("/api/resource/Supplier", data)
     return f"Supplier '{name}' created."
