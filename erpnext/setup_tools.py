@@ -1,12 +1,12 @@
 from erpnext.adapter import ERPNextAdapter, ERPNextError
 
 
-def create_company(adapter: ERPNextAdapter, name: str, currency: str, fiscal_year_start: str) -> str:
+def create_company(adapter: ERPNextAdapter, name: str, currency: str, fiscal_year_start: str, country: str = "United States") -> str:
     adapter.post("/api/resource/Company", {
         "company_name": name,
         "abbr": name[:3].upper(),
         "default_currency": currency,
-        "country": "United Kingdom",
+        "country": country,
         "fiscal_year_start": fiscal_year_start,
     })
     return f"Company '{name}' created with currency {currency}."

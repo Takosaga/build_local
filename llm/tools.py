@@ -24,10 +24,11 @@ _TOOL_DEFINITIONS = [
                 "type": "object",
                 "properties": {
                     "name": {"type": "string", "description": "Legal company name"},
-                    "currency": {"type": "string", "description": "ISO currency code, e.g. GBP"},
+                    "currency": {"type": "string", "description": "ISO currency code, e.g. USD"},
                     "fiscal_year_start": {"type": "string", "description": "Month-day, e.g. 01-01"},
+                    "country": {"type": "string", "description": "Full country name, e.g. United States"},
                 },
-                "required": ["name", "currency", "fiscal_year_start"],
+                "required": ["name", "currency", "fiscal_year_start", "country"],
             },
         },
     },

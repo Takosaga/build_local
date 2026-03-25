@@ -124,7 +124,7 @@ FASTAPI_PORT=8080
 
 def setup_venv():
     print_step(7, "Setting up Python environment with uv...")
-    subprocess.run(["uv", "venv"], check=True)
+    subprocess.run(["uv", "venv", "--clear"], check=True)
     subprocess.run(["uv", "sync"], check=True)
     print_ok("Python environment ready.")
 
