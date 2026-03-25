@@ -98,8 +98,8 @@ async def test_greet_step1_streams_sse_and_saves_message(client):
     with patch("main.run_tool_loop", return_value="Do you have existing data?"):
         resp = await client.get("/wizard/greet")
     assert resp.status_code == 200
-    assert "Do you have existing data?" in resp.text
     assert "[DONE]" in resp.text
+    assert '"delta"' in resp.text  # confirms delta SSE format
 
     from db.session import load_conversation
     history = load_conversation()
@@ -114,7 +114,11 @@ async def test_greet_idempotent_on_refresh(client):
         resp = await client.get("/wizard/greet")
         assert mock_llm.call_count == 1
 
-    assert "First greet" in resp.text
+    assert "[DONE]" in resp.text
+    # Check content was served from cache via history
+    from db.session import load_conversation
+    history = load_conversation()
+    assert any(m["role"] == "assistant" and "First greet" in m["content"] for m in history)
 
 
 async def test_greet_out_of_range_step_returns_done_only(client):

@@ -80,7 +80,9 @@ async def wizard_greet():
             ""
         )
         async def cached_stream():
-            yield f"data: {cached}\n\n"
+            for char in cached:
+                yield f"data: {json.dumps({'delta': char})}\n\n"
+                await asyncio.sleep(0)
             yield "data: [DONE]\n\n"
         return StreamingResponse(cached_stream(), media_type="text/event-stream")
 
@@ -107,7 +109,9 @@ async def wizard_greet():
     update_business_data({"_greeted_step": current_step})
 
     async def greet_stream():
-        yield f"data: {response_text}\n\n"
+        for char in response_text:
+            yield f"data: {json.dumps({'delta': char})}\n\n"
+            await asyncio.sleep(0)
         yield "data: [DONE]\n\n"
 
     return StreamingResponse(greet_stream(), media_type="text/event-stream")
