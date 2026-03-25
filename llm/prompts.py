@@ -43,3 +43,36 @@ def get_ongoing_prompt(business_name: str, business_type: str) -> str:
         business_name=business_name,
         business_type=business_type,
     )
+
+
+_GREET_PROMPTS = {
+    1: (
+        "You are helping a small business owner set up ERPNext. "
+        "Their business is {business_name}, a {business_type} in {location}. "
+        "Ask them ONE friendly question: do they have existing customer or product data "
+        "they would like to import, or would they prefer to start with a demo setup? "
+        "Ask nothing else."
+    ),
+    2: (
+        "You are helping {business_name} (a {business_type} in {location}) set up ERPNext. "
+        "Ask your first question to understand how their business operates. "
+        "One question only. Start with inventory: do they manage stock, or do they work to order?"
+    ),
+    3: (
+        "Summarise what has been configured for {business_name} based on the conversation "
+        "history so far. Present it clearly in plain language — modules, data choices, tax, "
+        "and any other details discussed. Then invite the user to change anything before "
+        "finalising. End with exactly: "
+        "'When you are happy with everything, click Finalise Setup below.'"
+    ),
+}
+
+
+def get_greet_prompt(step: int, business_name: str, business_type: str, location: str) -> str:
+    if step not in _GREET_PROMPTS:
+        raise ValueError(f"No greet prompt for step {step}")
+    return _GREET_PROMPTS[step].format(
+        business_name=business_name,
+        business_type=business_type,
+        location=location,
+    )
