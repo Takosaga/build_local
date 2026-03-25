@@ -110,7 +110,9 @@ def run_tool_loop(
         retry_triggered = False
         for tc in tool_calls:
             if not validate_tool_call(tc):
-                # Retry once with a correction prompt
+                # Remove the malformed assistant message before adding correction prompt,
+                # so the model doesn't see tool_calls without corresponding tool results.
+                loop_messages.pop()
                 loop_messages.append({
                     "role": "user",
                     "content": "Your last response had an invalid tool call format. Please try again with valid JSON arguments.",
